@@ -154,14 +154,15 @@ async def create_customer(customer: Customer):
 async def reservations():
     reservations = reservationRepository.list()
     return {
-        "message": "Customers Fetched Successfully", 
+        "message": "Reservations Fetched Successfully", 
         "data": reservations
     }
 
 @app.post("/reservations")
 async def create_reservation(reservation: Reservation):
-    # Check if customer exists
-    if not customerRepository.find(reservation.customer_id):
+    # # Check if customer exists
+    customer = customerRepository.find(reservation.customer_id)
+    if not customer:
         raise HTTPException(status_code=404, detail="Customer not found")
 
     # Check if book exists and has enough stock
@@ -172,7 +173,7 @@ async def create_reservation(reservation: Reservation):
         raise HTTPException(status_code=400, detail="Not enough stock available")
 
     # Create reservation
-    reservation_id = reservationRepository.create(reservation.customer_id, reservation.book_id, reservation.quantity)
+    reservation_id = reservationRepository.create(reservation.customer_id, customer["C_NAME"], reservation.book_id, book["B_TITLE"], reservation.quantity)
     
     # Update book stock
     bookRepository.updateInventory(reservation.book_id, book['B_STOCK'] - reservation.quantity)

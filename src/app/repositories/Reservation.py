@@ -47,7 +47,7 @@ class ReservationRepository():
     def edit(self, reservation_id, customer_id, book_id, quantity):
         with self.connection.cursor() as cursor:
             sql = """
-                UPDATE `reservations`
+                UPDATE `reservation`
                 SET `R_C_ID`=%s, `R_B_ID`=%s, `R_B_QUANTITY`=%s
                 WHERE `id`=%s
             """
@@ -57,7 +57,7 @@ class ReservationRepository():
 
     def delete(self, reservation_id):
         with self.connection.cursor() as cursor:
-            sql = "DELETE FROM `reservations` WHERE `id`=%s"
+            sql = "DELETE FROM `reservation` WHERE `id`=%s"
             cursor.execute(sql, (reservation_id,))
             self.connection.commit()
 
